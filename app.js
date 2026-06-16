@@ -3,143 +3,179 @@
  
 // ── Navbar scroll ──────────────────────────────────────────────
 const navbar = document.getElementById('navbar');
-let lastScroll = 0;
 window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  navbar.classList.toggle('scrolled', y > 40);
-  lastScroll = y;
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
 }, { passive: true });
  
 // ── Mobile menu ────────────────────────────────────────────────
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const mobileClose = document.getElementById('mobileClose');
- 
 hamburger?.addEventListener('click', () => mobileMenu.classList.add('open'));
 mobileClose?.addEventListener('click', () => mobileMenu.classList.remove('open'));
-mobileMenu?.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => mobileMenu.classList.remove('open'));
-});
+mobileMenu?.querySelectorAll('a').forEach(a =>
+  a.addEventListener('click', () => mobileMenu.classList.remove('open'))
+);
  
-// ── Fade-in on scroll ──────────────────────────────────────────
+// ── Fade-up on scroll (throttled via rAF) ─────────────────────
 const fadeEls = document.querySelectorAll('.fade-up');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      io.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+let ticking = false;
  
-fadeEls.forEach((el, i) => {
-  el.style.transitionDelay = `${(i % 4) * 80}ms`;
-  io.observe(el);
+function checkFades() {
+  const vh = window.innerHeight;
+  fadeEls.forEach(el => {
+    if (el.classList.contains('visible')) return;
+    const top = el.getBoundingClientRect().top;
+    if (top < vh - 50) el.classList.add('visible');
+  });
+  ticking = false;
+}
+ 
+// Stagger siblings in the same parent
+document.querySelectorAll('.packages-grid, .socials-grid, .about-content').forEach(parent => {
+  parent.querySelectorAll('.fade-up').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 70}ms`;
+  });
 });
  
-// ── Count-up animation ─────────────────────────────────────────
-function countUp(el, target, suffix = '') {
-  const duration = 1800;
-  const start = performance.now();
-  const step = (now) => {
-    const p = Math.min((now - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.floor(eased * target) + suffix;
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
+window.addEventListener('scroll', () => {
+  if (!ticking) { requestAnimationFrame(checkFades); ticking = true; }
+}, { passive: true });
+checkFades(); // run once on load
  
-const countEls = document.querySelectorAll('[data-count]');
-const countIO = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const target = +e.target.dataset.count;
-      const suffix = e.target.dataset.suffix || '';
-      countUp(e.target, target, suffix);
-      countIO.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.5 });
-countEls.forEach(el => countIO.observe(el));
+// ── Generic dot-synced carousel helper ────────────────────────
+function makeCarousel({ trackId, prevId, nextId, dotsId, cardSelector, autoplay }) {
+  const track = document.getElementById(trackId);
+  const prevBtn = document.getElementById(prevId);
+  const nextBtn = document.getElementById(nextId);
+  const dotsWrap = document.getElementById(dotsId);
+  if (!track) return;
  
-// ── Achievements carousel ──────────────────────────────────────
-const track = document.getElementById('achievementsTrack');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const dotsWrap = document.getElementById('carouselDots');
+  const cards = Array.from(track.querySelectorAll(cardSelector));
+  let current = 0;
  
-let currentIndex = 0;
-const cards = track?.querySelectorAll('.achievement-card');
-const cardCount = cards?.length || 0;
+  function buildDots() {
+    if (!dotsWrap) return;
+    cards.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', `Slide ${i + 1}`);
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+  }
  
-function updateDots() {
-  if (!dotsWrap) return;
-  dotsWrap.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('active', i === currentIndex);
-  });
-}
+  function updateDots() {
+    dotsWrap?.querySelectorAll('.dot').forEach((d, i) =>
+      d.classList.toggle('active', i === current)
+    );
+  }
  
-function scrollToCard(index) {
-  if (!cards?.length) return;
-  currentIndex = Math.max(0, Math.min(index, cardCount - 1));
-  const card = cards[currentIndex];
-  const trackLeft = track.getBoundingClientRect().left;
-  const cardLeft = card.getBoundingClientRect().left;
-  const offset = cardLeft - trackLeft - (track.offsetWidth / 2) + (card.offsetWidth / 2);
-  track.scrollBy({ left: offset, behavior: 'smooth' });
-  updateDots();
-}
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, cards.length - 1));
+    const card = cards[current];
+    const offset = card.offsetLeft - (track.offsetWidth / 2) + (card.offsetWidth / 2);
+    track.scrollTo({ left: offset, behavior: 'smooth' });
+    updateDots();
+  }
  
-prevBtn?.addEventListener('click', () => scrollToCard(currentIndex - 1));
-nextBtn?.addEventListener('click', () => scrollToCard(currentIndex + 1));
+  prevBtn?.addEventListener('click', () => goTo(current - 1));
+  nextBtn?.addEventListener('click', () => goTo(current + 1));
  
-// Build dots
-if (dotsWrap && cardCount) {
-  for (let i = 0; i < cardCount; i++) {
-    const dot = document.createElement('button');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', `Go to achievement ${i + 1}`);
-    dot.addEventListener('click', () => scrollToCard(i));
-    dotsWrap.appendChild(dot);
+  // Sync dots on native scroll (touch swipe)
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      let closest = 0, minDist = Infinity;
+      const center = track.scrollLeft + track.offsetWidth / 2;
+      cards.forEach((c, i) => {
+        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - center);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      if (closest !== current) { current = closest; updateDots(); }
+    }, 80);
+  }, { passive: true });
+ 
+  buildDots();
+ 
+  // Auto-advance on desktop
+  if (autoplay && window.matchMedia('(min-width: 900px)').matches) {
+    setInterval(() => goTo((current + 1) % cards.length), autoplay);
   }
 }
  
-// Sync dots on scroll
-track?.addEventListener('scroll', () => {
-  if (!cards?.length) return;
-  let closest = 0, minDist = Infinity;
-  cards.forEach((c, i) => {
-    const center = c.getBoundingClientRect().left + c.offsetWidth / 2;
-    const trackCenter = track.getBoundingClientRect().left + track.offsetWidth / 2;
-    const dist = Math.abs(center - trackCenter);
-    if (dist < minDist) { minDist = dist; closest = i; }
-  });
-  currentIndex = closest;
-  updateDots();
-}, { passive: true });
+// ── About Me image swiper ──────────────────────────────────────
+(function() {
+  const track = document.getElementById('aboutSwiperTrack');
+  const prevBtn = document.getElementById('aboutPrev');
+  const nextBtn = document.getElementById('aboutNext');
+  const dotsWrap = document.getElementById('aboutDots');
+  if (!track) return;
  
-// Auto-advance on desktop only
-if (window.matchMedia('(min-width: 900px)').matches) {
-  setInterval(() => {
-    const next = (currentIndex + 1) % cardCount;
-    scrollToCard(next);
-  }, 4000);
-}
+  const slides = Array.from(track.querySelectorAll('.about-slide'));
+  let current = 0;
  
-// ── Form submission (demo) ─────────────────────────────────────
+  function buildDots() {
+    slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', `Photo ${i + 1}`);
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap?.appendChild(btn);
+    });
+  }
+ 
+  function updateDots() {
+    dotsWrap?.querySelectorAll('.dot').forEach((d, i) =>
+      d.classList.toggle('active', i === current)
+    );
+  }
+ 
+  function goTo(i) {
+    current = Math.max(0, Math.min(i, slides.length - 1));
+    track.scrollTo({ left: slides[current].offsetLeft, behavior: 'smooth' });
+    updateDots();
+  }
+ 
+  prevBtn?.addEventListener('click', () => goTo(current - 1));
+  nextBtn?.addEventListener('click', () => goTo(current + 1));
+ 
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      const idx = Math.round(track.scrollLeft / track.offsetWidth);
+      if (idx !== current) { current = idx; updateDots(); }
+    }, 80);
+  }, { passive: true });
+ 
+  buildDots();
+})();
+ 
+// ── Achievements image carousel ────────────────────────────────
+makeCarousel({
+  trackId: 'achTrack',
+  prevId: 'achPrev',
+  nextId: 'achNext',
+  dotsId: 'achDots',
+  cardSelector: '.ach-img-card',
+  autoplay: 4500
+});
+ 
+// ── Contact form (demo) ────────────────────────────────────────
 const contactForm = document.getElementById('contactForm');
-contactForm?.addEventListener('submit', (e) => {
+contactForm?.addEventListener('submit', e => {
   e.preventDefault();
   const btn = contactForm.querySelector('[type=submit]');
+  const orig = btn.textContent;
   btn.textContent = 'Message Sent ✓';
   btn.style.background = '#22c55e';
   btn.disabled = true;
   setTimeout(() => {
-    btn.textContent = 'Send Message';
+    btn.textContent = orig;
     btn.style.background = '';
     btn.disabled = false;
     contactForm.reset();
   }, 3000);
 });
- 
