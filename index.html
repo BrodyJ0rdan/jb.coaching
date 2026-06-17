@@ -319,33 +319,194 @@
 <div class="divider"></div>
 
 <!-- ═══════ GET IN TOUCH ═══════ -->
-<section id="contact" style="margin:0 auto;" aria-labelledby="contact-heading">
+<section id="contact" aria-labelledby="contact-heading">
   <span class="section-eyebrow fade-up">Let's Talk</span>
   <h2 class="section-title fade-up" id="contact-heading">Get in Touch</h2>
   <p class="section-body fade-up">[A short friendly line inviting people to reach out and what they can expect.]</p>
 
-  <form class="contact-form" id="contactForm" novalidate>
-    <div class="form-row">
-      <div class="form-group fade-up">
-        <label class="form-label" for="name">Full Name</label>
-        <input class="form-input" type="text" id="name" name="name" placeholder="Your name" required />
+  <!-- ── Glassmorphism form container ── -->
+  <div class="enquiry-wrap fade-up">
+
+    <!-- SUCCESS STATE -->
+    <div class="form-success" id="formSuccess" role="alert" aria-live="polite">
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4DA3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
-      <div class="form-group fade-up">
-        <label class="form-label" for="email">Email Address</label>
-        <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required />
+      <h3 class="success-title">Enquiry Received!</h3>
+      <p class="success-body">Thanks for reaching out. I've received your enquiry and will get back to you within 24 hours.</p>
+      <button class="btn-secondary" id="formResetBtn" type="button" style="margin-top:8px;">Send Another Message</button>
+    </div>
+
+    <!-- ERROR BANNER -->
+    <div class="form-error-banner" id="formErrorBanner" role="alert" aria-live="polite">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Something went wrong. Please try again or email <a href="mailto:brodyjordan10@hotmail.com">brodyjordan10@hotmail.com</a> directly.</span>
+    </div>
+
+    <!-- ── THE FORM ── -->
+    <form class="enquiry-form" id="contactForm" novalidate autocomplete="on">
+
+      <!-- Web3Forms hidden fields -->
+      <!-- ▼▼▼ INSERT YOUR WEB3FORMS ACCESS KEY BELOW ▼▼▼ -->
+      <input type="hidden" name="access_key" value="39ea7cf5-55da-4445-97c4-5ebdb2ca3853" />
+      <!-- ▲▲▲ REPLACE VALUE WITH YOUR KEY FROM web3forms.com ▲▲▲ -->
+
+      <!-- Dynamic subject line using full name -->
+      <input type="hidden" name="subject" id="formSubject" value="New JB.Coaching Enquiry" />
+
+      <!-- Redirect Web3Forms response to JSON (no redirect page) -->
+      <input type="hidden" name="from_name" value="JB.Coaching Website" />
+
+      <!-- Honeypot spam filter -->
+      <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" aria-hidden="true" />
+
+      <!-- ROW 1: Name + Email -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="cf-name">
+            Full Name <span class="required-star">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="text"
+            id="cf-name"
+            name="Full Name"
+            placeholder="e.g. John Smith"
+            required
+            autocomplete="name"
+          />
+          <span class="field-error" id="err-name">Please enter your full name.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cf-email">
+            Email Address <span class="required-star">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="email"
+            id="cf-email"
+            name="Email Address"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          />
+          <span class="field-error" id="err-email">Please enter a valid email address.</span>
+        </div>
       </div>
-    </div>
-    <div class="form-group fade-up">
-      <label class="form-label" for="message">Message</label>
-      <textarea class="form-textarea" id="message" name="message" placeholder="Tell me about your goals and what you're looking for…" required></textarea>
-    </div>
-    <div class="fade-up">
-      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Send Message
+
+      <!-- ROW 2: Phone + Contact Method -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="cf-phone">
+            Phone Number <span class="required-star">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="tel"
+            id="cf-phone"
+            name="Phone Number"
+            placeholder="e.g. 07700 900000"
+            required
+            autocomplete="tel"
+          />
+          <span class="field-error" id="err-phone">Please enter your phone number.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cf-contact-method">
+            Preferred Contact Method <span class="optional-tag">Optional</span>
+          </label>
+          <select class="form-input form-select" id="cf-contact-method" name="Preferred Contact Method">
+            <option value="" disabled selected>Select preference…</option>
+            <option value="Email">Email</option>
+            <option value="Phone Call">Phone Call</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Instagram DM">Instagram DM</option>
+            <option value="No Preference">No Preference</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ROW 3: Package + Goal -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="cf-package">
+            Coaching Package <span class="required-star">*</span>
+          </label>
+          <select class="form-input form-select" id="cf-package" name="Coaching Package" required>
+            <option value="" disabled selected>Select a package…</option>
+            <option value="1-to-1 Coaching">1-to-1 Coaching</option>
+            <option value="Online Coaching">Online Coaching</option>
+            <option value="Custom Training Plan">Custom Training Plan</option>
+            <option value="Not Sure Yet">Not Sure Yet</option>
+          </select>
+          <span class="field-error" id="err-package">Please select a coaching package.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cf-goal">
+            Primary Fitness Goal <span class="required-star">*</span>
+          </label>
+          <select class="form-input form-select" id="cf-goal" name="Primary Fitness Goal" required>
+            <option value="" disabled selected>Select your goal…</option>
+            <option value="Weight Loss">Weight Loss</option>
+            <option value="Muscle Gain">Muscle Gain</option>
+            <option value="Strength Training">Strength Training</option>
+            <option value="General Fitness">General Fitness</option>
+            <option value="Sports Performance">Sports Performance</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="field-error" id="err-goal">Please select your primary fitness goal.</span>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="form-group">
+        <label class="form-label" for="cf-message">
+          Message <span class="required-star">*</span>
+        </label>
+        <textarea
+          class="form-input form-textarea"
+          id="cf-message"
+          name="Message"
+          placeholder="Tell me about yourself, your current fitness level, and what you're hoping to achieve…"
+          required
+          rows="5"
+        ></textarea>
+        <span class="field-error" id="err-message">Please add a message so I know how to help you.</span>
+      </div>
+
+      <!-- Hidden: submission timestamp (populated by JS) -->
+      <input type="hidden" name="Submission Date &amp; Time" id="cf-timestamp" />
+
+      <!-- Consent checkbox -->
+      <div class="form-group consent-group">
+        <label class="consent-label">
+          <input type="checkbox" id="cf-consent" name="consent" class="consent-check" required />
+          <span class="consent-box"></span>
+          <span class="consent-text">
+            I consent to JB.Coaching storing and processing my information in accordance with the
+            <a href="#privacy" class="consent-link">Privacy Policy</a>. <span class="required-star">*</span>
+          </span>
+        </label>
+        <span class="field-error" id="err-consent">You must agree to the Privacy Policy to submit.</span>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn-primary submit-btn" id="submitBtn">
+        <span class="submit-text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Enquiry
+        </span>
+        <span class="submit-loading" aria-hidden="true">
+          <svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>
+          Sending…
+        </span>
       </button>
-    </div>
-  </form>
+
+    </form>
+  </div><!-- /enquiry-wrap -->
 </section>
 
 <div class="divider"></div>
