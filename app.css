@@ -226,37 +226,32 @@ body > * { position: relative; z-index: 1; }
   z-index: 2;
 }
 
-.hero-logo-wrap {
-  position: relative;
-}
-
-/* GLOW */
 .hero-logo-wrap::before {
   content: '';
   position: absolute;
-  inset: -22px;
+  inset: -20px;
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
 
+  /* IMPORTANT: softer base glow (not too intense in center) */
   background: radial-gradient(
     circle,
-    rgba(77,163,255,0.45) 0%,
-    rgba(77,163,255,0.2) 45%,
+    rgba(77,163,255,0.55) 0%,
+    rgba(77,163,255,0.25) 40%,
     rgba(77,163,255,0) 70%
   );
 
-  filter: blur(16px);
+  filter: blur(14px);
 
-  /* ONLY animate opacity (this is the key fix) */
-  opacity: 0.7;
   animation: glow-breathe 3.5s ease-in-out infinite;
+  transform: scale(1.15);
   will-change: opacity;
 }
 
-/* smooth breathing */
+/* breathing glow */
 @keyframes glow-breathe {
-  0%, 100% { opacity: 0.55; }
+  0%, 100% { opacity: 0.6; }
   50%      { opacity: 1; }
 }
 
