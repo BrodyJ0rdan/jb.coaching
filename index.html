@@ -20,13 +20,13 @@
     <li><a href="#packages">Packages</a></li>
     <li><a href="#contact">Get in Touch</a></li>
   </ul>
-  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
 <!-- Mobile menu -->
-<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
   <button class="mobile-close" id="mobileClose" aria-label="Close menu">&#x2715;</button>
   <a href="#about">About Me</a>
   <a href="#achievements">Achievements</a>
@@ -236,10 +236,10 @@
 <div class="divider"></div>
 
 <!-- ═══════ PACKAGES ═══════ -->
-<section id="packages" aria-labelledby="packages-heading">
+<section id="packages" aria-labelledby="packages-heading" class="section-center">
   <span class="section-eyebrow fade-up">Invest in Yourself</span>
   <h2 class="section-title fade-up" id="packages-heading">Packages</h2>
-  <p class="section-body fade-up" style="margin:0 auto;">[A short line about how your packages are designed and who they're for.]</p>
+  <p class="section-body fade-up">[A short line about how your packages are designed and who they're for.]</p>
 
   <div class="packages-grid">
 
@@ -319,7 +319,7 @@
 <div class="divider"></div>
 
 <!-- ═══════ GET IN TOUCH ═══════ -->
-<section id="contact" aria-labelledby="contact-heading">
+<section id="contact" class="section-center" aria-labelledby="contact-heading">
   <span class="section-eyebrow fade-up">Let's Talk</span>
   <h2 class="section-title fade-up" id="contact-heading">Get in Touch</h2>
   <p class="section-body fade-up">[A short friendly line inviting people to reach out and what they can expect.]</p>
@@ -512,25 +512,25 @@
 <div class="divider"></div>
 
 <!-- ═══════ SOCIALS & CONTACT INFO ═══════ -->
-<section id="socials" style="margin:0 auto;" aria-labelledby="socials-heading">
+<section id="socials" class="section-center" aria-labelledby="socials-heading">
   <span class="section-eyebrow fade-up">Follow Along</span>
   <h2 class="section-title fade-up" id="socials-heading">Find Me Online</h2>
   <p class="section-body fade-up" style="margin:0 auto;">[A short line about where people can follow your journey and content.]</p>
 
   <div class="socials-grid">
-    <a href="https://facebook.com/_jb.coaching" target="_blank" rel="noopener" class="social-card fade-up" aria-label="Facebook">
+    <a href="https://facebook.com/[your-handle]" target="_blank" rel="noopener" class="social-card fade-up" aria-label="Facebook">
       <div class="social-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
       </div>
       <span class="social-name">Facebook</span>
     </a>
-    <a href="https://instagram.com/_jb.coaching" target="_blank" rel="noopener" class="social-card fade-up" aria-label="Instagram">
+    <a href="https://instagram.com/[your-handle]" target="_blank" rel="noopener" class="social-card fade-up" aria-label="Instagram">
       <div class="social-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </div>
       <span class="social-name">Instagram</span>
     </a>
-    <a href="https://x.com/_jb.coaching" target="_blank" rel="noopener" class="social-card fade-up" aria-label="X (Twitter)">
+    <a href="https://x.com/[your-handle]" target="_blank" rel="noopener" class="social-card fade-up" aria-label="X (Twitter)">
       <div class="social-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </div>
@@ -576,6 +576,5 @@
 </footer>
 
 <script src="app.js"></script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
